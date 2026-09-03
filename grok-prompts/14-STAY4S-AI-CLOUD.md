@@ -169,3 +169,66 @@ SCHRIJF DE VOLGENDE LEVERANCIEREN:
 Geef alles als copy-paste ready code en configs. Echte package-namen en versies 2026. Nederlands in uitleg, Engels in code. Volledig executeerbaar, geen placeholders. Wees eerlijk over beperkingen van lokale modellen — geen mooipraterij.
 
 ---
+
+# PROMPT 14 ADDENDUM-3: Hoofdagent, Agent Factory, Teams & WhatsApp Berichtcentrum
+
+Plak dit als DERDE AANVULLING achter Prompt 14 in Grok:
+
+---
+
+NIEUWE MODULE: STAY4S HOOFDAGENT-SYSTEEM (multi-agent op eigen infra)
+
+DOEL: bouw een eigen AI-omgeving die via een WhatsApp-berichtcentrum werkt zoals een hosted superagent dat doet — Mitchell opent WhatsApp, praat met zijn eigen hoofAI, en die kan ALLES: tools gebruiken, informatie opslaan, en ZELF NIEUWE AI-AGENTEN MAKEN die als teams werken (GitHub team, verwerkingsteam). Alle agents handelen volgens opdrachten van de hoofdagent. Alles wat ze doen landt in de eigen informatie-opslag (InfoVault op eigen infra) die blijft groeien met ons mee.
+
+ARCHITECTUUR (5 lagen):
+
+7A. WHATSAPP BERICHTCENTRUM (front-end, zoals een superagent via WhatsApp)
+- Eigen WhatsApp-koppeling via Meta WhatsApp Cloud API (WhatsApp Business Platform): business verification, dedicated Stay4S-nummer, webhook-endpoint (FastAPI + nginx op eigen server), inkomende berichten → hoofdagent, antwoorden terug
+- Ook: spraakberichten transcriberen (Whisper), foto's/documenten verwerken (Qwen2.5-VL OCR)
+- Gebruik Meta Cloud API rechtstreeks (niet via tussenpartij) voor soevereiniteit
+- Fallback terwijl de Meta-verificatie loopt (kan weken duren): Matrix-bridge en een simpele web-chat op de eigen server
+- Anti-abuse: alleen Mitchells nummer + later abonnees met whitelist
+
+7B. HOOFDAGENT (main orchestrator — het brein)
+- LangGraph hoofdagent: ontvangt bericht, bepaalt intentie, plant, delegeert aan teams, bewaakt kwaliteit, rapporteert terug
+- EIGEN GEHEUGEN zoals een superagent: gebruikersprofiel, feiten-regels, automatische gespreks-samenvattingen, langetermijngeheugen (Postgres + Qdrant)
+- Persoonlijkheid: warm, proactief, actiegericht — neemt initiatief, stelt voor, herinnert
+- Kan ALLE tools van Addendum-2 (shell, bestanden, GitHub, mail, agenda, web, browser, database)
+
+7C. AGENT FACTORY (de hoofdAI maakt zelf nieuwe agents)
+- Agent-register in Postgres: naam, rol, specialisatie, system-prompt, tool-set, permissie-tier, status, taken-teller (spiegel dit schema: name, role, specialization, capabilities, description, level, status, tasks_completed, created_by_agent)
+- Factory-proces: hoofdagent definieert nieuwe agent (voorbeeld: "GitHub Team — PR-reviewer: reviewt elke PR in Stay4s-grokrom op fouten") → prompt-template + tools + permissies → instantie als Docker-container met eigen sessie
+- Teamtemplates om mee te starten:
+  1. GITHUB TEAM: repo-scanner (nieuwe commits/issues detecteren), PR-reviewer (code-kwaliteit), documentatie-schrijver (houdt BUILD.md/DECISIONS.md/CHANGELOG.md bij)
+  2. VERWERKINGSTEAM: doc-parser (PDF's/foto's extracten), InfoVault-archivaris (categoriseren, taggen, verbanden leggen), gesprek-samenvatter (WhatsApp/Grok-gesprekken samenvatten)
+- BEVEILIGING: nieuwe agents krijgen nooit hogere permissies dan de hoofdagent; externe acties (mail sturen, commits pushen) alleen na goedkeuring van hoofdagent of Mitchell; elke agent-actie in audit-log
+
+7D. TEAM-WERKWIJZE & COMMUNICATIE
+- Opdrachtensysteem in Postgres (spiegel dit schema: titel, beschrijving, opdrachtgever, toegewezen_agent, prioriteit, deadline, status, resultaat, notities)
+- Flow: hoofdagent maakt Opdracht → teamlid pakt op uit taakwachtrij (Postgres/Redis queue) → voert uit → rapporteert resultaat → hoofdagent controleert en sluit af
+- Escalatie: worker vastloper → terug naar hoofdagent → indien nodig naar Mitchell via WhatsApp
+- Wekelijkse ritmes blijven bestaan op eigen infra: document-scan, repo-scan, gap-analyse per spoor, weekplanning
+
+7E. EIGEN INFOVAULT DIE MEEGROEIT
+- Postgres InfoVault op eigen server: titel, samenvatting, bron, type, belangrijkheid, tags, actie_vereist, actie_status, ruwe_inhoud, verwerkt + Qdrant vectors voor RAG
+- Elke conversatie, elk document, elke teamtaak wordt automatisch verwerkt en opgeslagen — het systeem wordt elke dag slimmer
+- Migratie: huidige Base44 InfoVault exporteren (160+ entries) en importeren; daarna sync tussen beide tijdens overgang
+
+7F. MIGRATIEPAD & REALITEITSCHECK (eerlijk zijn)
+- Hybride start: Base44 blijft staging/backup, eigen rack wordt productie zodra de GPU's draaien
+- Eerlijk over modellen: een lokaal 70B-model is goed maar niet frontier — voor complexe agent-taken kan de hoofdagent een keuzelaag hebben: standaard lokaal (kosten €0, soeverein), expliciete fallback naar cloud-API per taak (alleen als Mitchell dat aan zet) — geen verborgen kosten
+- Roadmap fase 1 (4 weken): FastAPI gateway + hoofdagent + GitHub team (2 agents) + eigen InfoVault. Fase 2 (week 5-8): WhatsApp-berichtcentrum + verwerkingsteam. Fase 3 (week 9+): agent factory UI in het Command Center + meer teams naar behoefte (marketing, support, onderzoek)
+
+SCHRIJF DE VOLGENDE LEVERANCIEREN (copy-paste ready):
+7G. Architectuurdiagram (mermaid) van de 5 lagen
+7H. docker-compose.yml: gateway, hoofdagent, agent-runtime (Docker-in-Docker of per-agent containers), queue, Postgres, Qdrant, Whisper, vLLM
+7I. FastAPI-code: WhatsApp webhook (verify + receive + send), opdracht-endpoints, agent-factory endpoint
+7J. LangGraph hoofdagent skeleton: intentie-herkenning, planning, delegatie naar teams, geheugen-schrijfstappen, terugkoppeling naar WhatsApp
+7K. SQL-schema's: agent_register, opdrachten, infovault, tool_audit_log, conversation_summaries
+7L. Voorbeeld-agent: complete PR-reviewer met system-prompt, tool-config (GitHub MCP), en rapportformat
+7M. Setup-gids WhatsApp Cloud API: stap-voor-stap (business manager, verificatie, nummer, webhook-config, test)
+7N. Testplan: hoe bewijs je dat het systeem werkt — "stuur via WhatsApp: check de repos" → hoofdagent → GitHub team → rapport terug in WhatsApp
+
+Nederlands in uitleg, Engels in code. Echte package-namen, echte API-namen, versies 2026. Volledig executeerbaar, geen placeholders. Waar Meta-verificatie geduld vereist, zeg dat expliciet.
+
+---
