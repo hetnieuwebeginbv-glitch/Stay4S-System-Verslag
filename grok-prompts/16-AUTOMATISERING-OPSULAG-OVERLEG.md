@@ -28,6 +28,12 @@ VRAAG 2 — OPSLAGSTRATEGIE (waar slaan we alles op): maak een CANONIEK REPO-PLA
 - Kritiek op onze voorstelling hierboven: wat is fout, wat mist (denk aan: monorepo vs multi-repo, tags/releases, changelog-discipline, docs-naast-code)
 - Opslag-lagen nu: GitHub (broncode) + Base44 InfoVault (kennis) + Google Drive (backup). Is dat compleet of mist er een laag (bijv. self-hosted git-mirror op de AX102 voor soevereiniteit)?
 
+VRAAG 2BIS — MEER AI'S IN HETZELFDE TEAM: Mitchell wil buiten jou en Stay4Compa ook andere AI-agents in dezelfde repos kunnen laten werken: Droid (Factory), OpenCode (open-source terminal agent, kan met lokale modellen via Ollama), ChatGPT/Codex CLI, en later evt. Claude Code / Gemini CLI. Vragen:
+a) Wat is per tool de sterkste rol in ons ecosysteem (ROM-build, app-code, docs, tests, reviews)? Geef een functieverdeling zodat niet elke AI alles door elkaar doet.
+b) Welke tools kunnen agentisch in een repo werken (eigen commits/PR's) en welke zijn alleen assistent (copy-paste zoals nu)? Wees precies over 2026-capaciteiten.
+c) Beveiliging: hoe regelen we per-AI een eigen fine-grained GitHub-token met minimale rechten, eigen branch (ai/droid, ai/opencode, ai/codex) en commit-prefix ([droid], [opencode], [codex])?
+d) Welke tool is het soevereinst (open source + lokale modellen) en dus het beste te vertrouwen in onze architectuur?
+
 VRAAG 3 — VOLGORDE: top-5 automatiseringen gesorteerd op impact vs. moeite. Per stap: wat het oplevert, wat ervoor nodig is, welke AI hem uitvoert, en wat Mitchell moet goedkeuren.
 
 EIND: een één-pagina besluitvoorstel dat Mitchell kan goedkeuren. Nederlands, concreet, executeerbaar.
