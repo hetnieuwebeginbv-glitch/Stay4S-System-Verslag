@@ -44,3 +44,16 @@ Zelfde patroon herbruikbaar per abonnee: privacy-abonnees → local tier (garant
 - OmniRoute is een jong, snelgroeiend project: pin een versie, neem geen :latest
 - Gratis externe providers = data buiten EU: DEV-only, hard coderen in de PROD-config
 - Extra hop = paar ms latency: verwaarloosbaar t.o.v. model-inferentie
+
+## 9. IDEEËNLIJST (erbij, 8 september 2026)
+Uit de OmniRoute-analyse + eigen uitbreidingen, direct toepasbaar op Stay4S:
+1. Token-compressie (RTK+Caveman-patroon) op eigen vLLM: 15-95% prompt-besparing = 2-3x meer requests per GPU-uur op AX102 en later de 5090-rig
+2. Per-abonnee quota-telemetrie met live used/remaining in het Stay4LM-dashboard = het kosten-plafond per tier meetbaar maken
+3. Modality Bridge: Whisper (STT) + Qwen2.5-VL (visie) + Kokoro (TTS) verenigen achter één endpoint, tools weten nooit welk model draait
+4. LLM-provider-catalogus met trial-scores en risk-marks — spiegel van de EsimProvider-aanpak, één architectuur voor beide producten
+5. Routing-log als leerdata: RoutingLog-entity bestaat al in Stay4Compa — vul die met LLM-routing-beslissingen zodat StayLM leert kiezen
+6. Eigen "free-tier radar": catalogus van gratis tiers, alleen voor DEV-verkeersklasse
+7. De 3 beste van OmniRoute's 19 routing-strategieën adopteren: priority-cascade, quota-aware, latency-aware
+8. DEV/PROD-keys = de permissie-tiers uit Prompt 14 Addendum-2: privacy-abonnee (local-only) vs frontier-optie (extern, expliciete keuze, betaald)
+9. Overal-bereikbaar: agents draaien waar het endpoint maar te horen is (Termux-bewijs: zelfs op een telefoon)
+10. Adapter-marketplace: community schrijft provider-adapters, Stay4S host de gateway — F-Droid-filosofie doorgetrokken naar AI
